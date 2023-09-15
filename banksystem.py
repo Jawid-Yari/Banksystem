@@ -72,10 +72,10 @@ class Customer_database:
     def generate_customer(self,number_of_customer):
         for c in range(1, number_of_customer + 1):
             fake = Faker()
-            name = self.create_names()
+            name = self.generate_names()
             birthdate = fake.date()
-            account_number = self.create_account_num(c)
-            created = self.get_created_date()
+            account_number = self.generate_account_num(c)
+            created = self.generate_created_date()
             saldo = random.uniform(0, 10000)
             last_updated = self.last_updated_time()
             customer = Customer(name=name, birthdate=birthdate,
