@@ -13,12 +13,12 @@ class Customer:
         self.last_updated = last_updated
 
     def __repr__(self) -> str:
-        return (f"Account Owner: {self.name}\n"
-                f"Birthdate: {self.birthdate}\n"
-                f"Account number: {self.account_number}\n"
-                f"Created date: {self.created}\n"
-                f"Saldo: {self.saldo}\n"
-                f"Last updated: {self.last_updated}\n"
+        return (f"{self.name}\n"
+                f"{self.birthdate}\n"
+                f"{self.account_number}\n"
+                f"{self.created}\n"
+                f"{self.saldo}\n"
+                f"{self.last_updated}\n"
                 )
 
 
@@ -69,33 +69,23 @@ class Customer_database:
         return datetime.datetime.now()
         
 
-    def generate_customer(self,number_of_customer):
-        for c in range(1, number_of_customer + 1):
-            fake = Faker()
-            name = self.generate_names()
-            birthdate = fake.date()
-            account_number = self.generate_account_num(c)
-            created = self.generate_created_date()
-            saldo = random.uniform(0, 10000)
-            last_updated = self.last_updated_time()
-            customer = Customer(name=name, birthdate=birthdate,
-                                account_number=account_number, 
-                                created=created, saldo=saldo,
-                                last_updated= last_updated 
-                                )
-            self.customers[account_number] = customer
+    def generate_customer(self, number_of_customer):
+        fake = Faker()
+        self.customers = {
+            self.generate_account_num(c): Customer(
+                name=self.generate_names(),
+                birthdate=fake.date(),
+                account_number=self.generate_account_num(c),
+                created=self.generate_created_date(),
+                saldo=random.uniform(0, 10000),
+                last_updated=self.last_updated_time()
+            )
+            for c in range(1, number_of_customer + 1)
+        }
 
 
     def get_account(self, account_to_search: str) -> Customer or None:
-        for customer in self.customers:
-            if customer.account_number == account_to_search:
-                return customer
-        return None
-
-
-
-
-
+        return self.customers.get(account_to_search, None)
 
 
 
@@ -123,3 +113,6 @@ if __name__ == "__main__":
     accounts_to_check = ["1111-0000001000", "1111-0009999999", "1111-9999999999"]
     for i in (accounts_to_check):
         search_account(i)
+
+    for account_number in customer_db.customers.keys():
+        print(account_number)
