@@ -2,7 +2,7 @@ import datetime
 import random
 from time import time
 from faker import Faker
-
+import string
 class Customer:
     def __init__(self, name, birthdate, account_number, created,saldo, last_updated: str = None):
         self.name = name 
@@ -67,8 +67,10 @@ class Customer_database:
 
 
     def generate_names(slef) -> str:
-        fake = Faker()
-        name = fake.first_name()
+        len_name = random.randint(3,8)
+        first_letter = random.choice(string.ascii_uppercase)
+        rest_of_string = ''.join(random.choice(string.ascii_lowercase) for _ in range(len_name))
+        name = first_letter + rest_of_string
         return name 
     
 
@@ -83,7 +85,7 @@ class Customer_database:
         
 
 
-    def generate_created_date(self):
+    def generate_date(self):
         created = datetime.date(random.randint(1940, 2000), 
                                     random.randint(1, 12), 
                                     random.randint(1, 24))
@@ -98,11 +100,10 @@ class Customer_database:
     def generate_customer(self,number_of_customer):
         
         for _ in range(1, number_of_customer + 1):
-            fake = Faker()
             name = self.generate_names()
-            birthdate = fake.date()
+            birthdate = self.generate_date()
             account_number = self.generate_account_num()
-            created = self.generate_created_date()
+            created = self.generate_date()
             saldo = random.uniform(0, 10000)
             last_updated = self.last_updated_time()
 
@@ -126,7 +127,7 @@ class Customer_database:
 
 @count_time("Creating customer")
 def generate_customers():
-    customer_db.generate_customer(10_000_000)
+    customer_db.generate_customer(10)
 
 
 
@@ -150,10 +151,6 @@ if __name__ == "__main__":
     generate_customers()
 
     customer_db.sort_customers_by_account_number()
-
-    accounts_to_check = ["1111-0000001000", "1111-0009999999", "1111-9999999999", "1111-0000000003"]
-    for i in (accounts_to_check):
-        search_account(i)
 
     for ac in customer_db.customers:
         print(ac)
