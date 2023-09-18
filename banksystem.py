@@ -66,6 +66,26 @@ class Customer_database:
         self.customers = self.quicksort(self.customers)
 
 
+    @count_time("Searching")
+    def binary_search(self, element):
+        lista = [customer.account_number for customer in self.customers]
+        element = element
+        length = len(lista)-1
+        i = 0
+        while i <= length:
+            medium = (i + length)//2
+            if element < lista[medium]:
+                length = medium -1 
+            elif element > lista[medium]:
+                i = medium + 1
+            elif element == lista[medium]:
+                print(f"{element} matchar {lista[medium]}")
+                break
+            else:
+                print("number you are searching for is not in the list")
+            
+
+
     def generate_names(slef) -> str:
         fake = Faker()
         name = fake.first_name()
@@ -126,7 +146,7 @@ class Customer_database:
 
 @count_time("Creating customer")
 def generate_customers():
-    customer_db.generate_customer(10_000_000)
+    customer_db.generate_customer(10)
 
 
 
@@ -151,9 +171,10 @@ if __name__ == "__main__":
 
     customer_db.sort_customers_by_account_number()
 
-    accounts_to_check = ["1111-0000001000", "1111-0009999999", "1111-9999999999", "1111-0000000003"]
-    for i in (accounts_to_check):
-        search_account(i)
+    # accounts_to_check = ["1111-0000001000", "1111-0009999999", "1111-9999999999", "1111-0000000003"]
+    # for i in (accounts_to_check):
+    #     search_account(i)
 
+    customer_db.binary_search("1111-0000000999")
     for ac in customer_db.customers:
         print(ac)
