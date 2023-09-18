@@ -50,7 +50,7 @@ class Customer_database:
             customer.account_number[-10]
 
 
-
+    
     def quicksort(self, customers):
         if len(customers) <= 1:
             return customers
@@ -61,7 +61,7 @@ class Customer_database:
             greater_than_pivot = [customer for customer in customers[1:] if customer.account_number[-10:] > pivot]
             return self.quicksort(less_than_pivot) + equal_to_pivot + [customers[0]] + self.quicksort(greater_than_pivot)
 
-
+    @count_time("sorting")
     def sort_customers_by_account_number(self):
         self.customers = self.quicksort(self.customers)
 
@@ -126,7 +126,7 @@ class Customer_database:
 
 @count_time("Creating customer")
 def generate_customers():
-    customer_db.generate_customer(100)
+    customer_db.generate_customer(10_000_000)
 
 
 
