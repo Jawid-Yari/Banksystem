@@ -40,11 +40,31 @@ def count_time(message):
 class Customer_database: 
     def __init__(self):
         self.customers = []
-
+        self.generated_account_number = set()
 
     def __repr__(self) -> str:
         return self.customers
-    
+
+    def sort_account_number(self):
+        for customer in self.customers:
+            customer.account_number[-10]
+
+
+
+    def quicksort(self, customers):
+        if len(customers) <= 1:
+            return customers
+        else:
+            pivot = customers[0].account_number[-10:]
+            less_than_pivot = [customer for customer in customers[1:] if customer.account_number[-10:] < pivot]
+            equal_to_pivot = [customer for customer in customers[1:] if customer.account_number[-10:] == pivot]
+            greater_than_pivot = [customer for customer in customers[1:] if customer.account_number[-10:] > pivot]
+            return self.quicksort(less_than_pivot) + equal_to_pivot + [customers[0]] + self.quicksort(greater_than_pivot)
+
+
+    def sort_customers_by_account_number(self):
+        self.customers = self.quicksort(self.customers)
+
 
     def generate_names(slef) -> str:
         fake = Faker()
@@ -52,20 +72,22 @@ class Customer_database:
         return name 
     
 
-    def generate_account_num(self, number_of_customers):
-        for _ in range(number_of_customers):
-            clearing_num = random.randint(1111, 9999)
-            account_num = random.randint(0000000000, 9999999999)
-            char = "-"
-            account_number = f"{clearing_num}{char}{account_num}"
-        yield account_number
+    def generate_account_num(self):
+        while True:
+            clearing_num = random.randint(1111,9999)
+            account_num = random.randint(0, 9999999999)
+            account_number = f"{clearing_num:04}-{account_num:010}"
+            if account_number not in self.generated_account_number:
+                self.generated_account_number.add(account_number)
+                return account_number
+        
 
 
     def generate_created_date(self):
         created = datetime.date(random.randint(1940, 2000), 
                                     random.randint(1, 12), 
                                     random.randint(1, 24))
-        yield created
+        return created
     
 
 
@@ -79,7 +101,7 @@ class Customer_database:
             fake = Faker()
             name = self.generate_names()
             birthdate = fake.date()
-            account_number = self.generate_account_num(number_of_customer)
+            account_number = self.generate_account_num()
             created = self.generate_created_date()
             saldo = random.uniform(0, 10000)
             last_updated = self.last_updated_time()
@@ -92,6 +114,8 @@ class Customer_database:
             self.customers.append(customer)
 
 
+
+
     def get_account(self, account_to_search: str) -> Customer or None:
         for customer in self.customers:
             if customer.account_number == account_to_search:
@@ -100,32 +124,36 @@ class Customer_database:
             return None
 
 
+@count_time("Creating customer")
+def generate_customers():
+    customer_db.generate_customer(100)
+
+
+
+@count_time("Searching")    
+def search_account(account_to_check: str):
+    found_account = customer_db.get_account(account_to_search=account_to_check)
+    if found_account:
+        print(f"Account number {account_to_check} belongs to:'{found_account.name}' ")
+    else:
+        print(f"Account number: {account_to_check} not found")
+
+
+
+
+
+
 
 if __name__ == "__main__":
     
     customer_db = Customer_database()
-
-
-    @count_time("Creating customer")
-    def generate_customers():
-        customer_db.generate_customer(10)
-
-
-    @count_time("Searching")    
-    def search_account(account_to_check: str):
-        found_account = customer_db.get_account(account_to_search=account_to_check)
-        if found_account:
-            print(f"Account number {account_to_check} belongs to:'{found_account.name}' ")
-        else:
-            print(f"Account number: {account_to_check} not found")
-
-
-
     generate_customers()
+
+    customer_db.sort_customers_by_account_number()
 
     accounts_to_check = ["1111-0000001000", "1111-0009999999", "1111-9999999999", "1111-0000000003"]
     for i in (accounts_to_check):
         search_account(i)
 
-for ac in customer_db.customers:
-    print(ac)
+    for ac in customer_db.customers:
+        print(ac)
