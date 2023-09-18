@@ -45,11 +45,6 @@ class Customer_database:
     def __repr__(self) -> str:
         return self.customers
 
-    def sort_account_number(self):
-        for customer in self.customers:
-            customer.account_number[-10]
-
-
     
     def quicksort(self, customers):
         if len(customers) <= 1:
