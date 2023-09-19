@@ -44,12 +44,6 @@ class Customer_database:
 
     def __repr__(self) -> str:
         return self.customers
-
-    def sort_account_number(self):
-        for customer in self.customers:
-            customer.account_number[-10]
-
-
     
     def quicksort(self, customers):
         if len(customers) <= 1:
@@ -66,20 +60,20 @@ class Customer_database:
         self.customers = self.quicksort(self.customers)
 
 
-    @count_time("Searching account number")
+    @count_time("Searching for account number")
     def binary_search(self, element):
-        lista = [customer.account_number[-10:] for customer in self.customers]
+        lista_of_account_numbers = [customer.account_number[-10:] for customer in self.customers]
         number_to_search = element
-        length = len(lista)-1
+        length = len(lista_of_account_numbers)-1
         low = 0
         while low <= length:
             medium = (low + length)//2
-            if number_to_search < lista[medium]:
+            if number_to_search < lista_of_account_numbers[medium]:
                 length = medium -1 
-            elif number_to_search > lista[medium]:
+            elif number_to_search > lista_of_account_numbers[medium]:
                 low = medium + 1
-            elif number_to_search == lista[medium]:
-                print(f"{number_to_search} matchar {lista[medium]}")
+            elif number_to_search == lista_of_account_numbers[medium]:
+                print(f"{number_to_search} matchar {lista_of_account_numbers[medium]}")
                 break
             
 
