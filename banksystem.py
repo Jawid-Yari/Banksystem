@@ -1,6 +1,6 @@
 import datetime 
 import random
-from time import time
+from time import perf_counter
 from faker import Faker
 
 class Customer:
@@ -26,10 +26,10 @@ class Customer:
 def count_time(message):
     def decorator(func:callable):
         def inner(*args, **kwargs):
-            start = time()
+            start = perf_counter()
             result =func(*args, **kwargs)
-            end = time()
-            print( f"{message} took {end - start} ms")
+            end = perf_counter()
+            print( f"{message} took {end - start} seconds")
             return result
         return inner
     return decorator
@@ -63,7 +63,7 @@ class Customer_database:
     @count_time("Searching for account number")
     def binary_search(self, element):
         lista_of_account_numbers = [customer.account_number[-10:] for customer in self.customers]
-        number_to_search = element
+        number_to_search = element[-10:]
         length = len(lista_of_account_numbers)-1
         low = 0
         while low <= length:
@@ -73,7 +73,7 @@ class Customer_database:
             elif number_to_search > lista_of_account_numbers[medium]:
                 low = medium + 1
             elif number_to_search == lista_of_account_numbers[medium]:
-                print(f"{number_to_search} matchar {lista_of_account_numbers[medium]}")
+                print(f"Account number '{element}' matchar {lista_of_account_numbers[medium]}")
                 break
             
 
@@ -84,14 +84,9 @@ class Customer_database:
         return name 
     
 
-    def generate_account_num(self):
-        while True:
-            clearing_num = random.randint(1111,9999)
-            account_num = random.randint(0, 9999999999)
-            account_number = f"{clearing_num:04}-{account_num:010}"
-            if account_number not in self.generated_account_number:
-                self.generated_account_number.add(account_number)
-                return account_number
+    def generate_account_num(self, c):
+        account_number = f"1111-{c:00000000010}"
+        return account_number
         
 
 
@@ -113,7 +108,7 @@ class Customer_database:
             fake = Faker()
             name = self.generate_names()
             birthdate = fake.date()
-            account_number = self.generate_account_num()
+            account_number = self.generate_account_num(_)
             created = self.generate_created_date()
             saldo = random.uniform(0, 10000)
             last_updated = self.last_updated_time()
@@ -138,7 +133,7 @@ class Customer_database:
 
 @count_time("Creating customer")
 def generate_customers():
-    customer_db.generate_customer(10)
+    customer_db.generate_customer(100)
 
 
 
@@ -163,11 +158,11 @@ if __name__ == "__main__":
 
     customer_db.sort_customers_by_account_number()
 
-    # accounts_to_check = ["1111-0000001000", "1111-0009999999", "1111-9999999999", "1111-0000000003"]
-    # for i in (accounts_to_check):
-    #     search_account(i)
+    accounts_to_check = ["1111-0000001000", "1111-0009999999", "1111-9999999999", "1111-0000000003"]
+    for item in (accounts_to_check):
+        customer_db.binary_search(item)
 
-    customer_db.binary_search("1111-0000000999")
+    
     for ac in customer_db.customers:
         print(ac)
     
