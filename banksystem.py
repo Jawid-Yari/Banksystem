@@ -29,7 +29,7 @@ def count_time(message):
             start = time()
             result =func(*args, **kwargs)
             end = time()
-            print( f"{message} took {end - start} minutes")
+            print( f"{message} took {end - start} ms")
             return result
         return inner
     return decorator
