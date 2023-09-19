@@ -66,23 +66,21 @@ class Customer_database:
         self.customers = self.quicksort(self.customers)
 
 
-    @count_time("Searching")
+    @count_time("Searching account number")
     def binary_search(self, element):
         lista = [customer.account_number[-10:] for customer in self.customers]
-        element = element
+        number_to_search = element
         length = len(lista)-1
         low = 0
         while low <= length:
             medium = (low + length)//2
-            if element < lista[medium]:
+            if number_to_search < lista[medium]:
                 length = medium -1 
-            elif element > lista[medium]:
+            elif number_to_search > lista[medium]:
                 low = medium + 1
-            elif element == lista[medium]:
-                print(f"{element} matchar {lista[medium]}")
+            elif number_to_search == lista[medium]:
+                print(f"{number_to_search} matchar {lista[medium]}")
                 break
-            else:
-                print("number you are searching for is not in the list")
             
 
 
