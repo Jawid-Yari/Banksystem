@@ -71,17 +71,16 @@ class Customer_database:
 
     def generate_customer(self, number_of_customer):
         fake = Faker()
-        self.customers = {
-            self.generate_account_num(c): Customer(
-                name=self.generate_names(),
-                birthdate=fake.date(),
-                account_number=self.generate_account_num(c),
-                created=self.generate_created_date(),
-                saldo=random.uniform(0, 10000),
-                last_updated=self.last_updated_time()
-            )
-            for c in range(1, number_of_customer + 1)
-        }
+        for c in range(1, number_of_customer + 1):
+            self.customers[self.generate_account_num(c)] = Customer(
+                                                        name=self.generate_names(),
+                                                        birthdate=fake.date(),
+                                                        account_number=self.generate_account_num(c),
+                                                        created=self.generate_created_date(),
+                                                        saldo=random.uniform(0, 10000),
+                                                        last_updated=self.last_updated_time()
+                                                        )
+            
 
 
     def get_account(self, account_to_search: str) -> Customer or None:
@@ -96,7 +95,7 @@ if __name__ == "__main__":
 
     @count_time("Creating customer")
     def generate_customers():
-        customer_db.generate_customer(10**7)
+        customer_db.generate_customer(10)
 
 
     @count_time("Searching")    
