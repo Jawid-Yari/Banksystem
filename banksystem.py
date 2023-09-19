@@ -170,3 +170,4 @@ if __name__ == "__main__":
     customer_db.binary_search("1111-0000000999")
     for ac in customer_db.customers:
         print(ac)
+    
