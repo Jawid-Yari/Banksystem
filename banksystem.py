@@ -61,23 +61,23 @@ class Customer_database:
             greater_than_pivot = [customer for customer in customers[1:] if customer.account_number[-10:] > pivot]
             return self.quicksort(less_than_pivot) + equal_to_pivot + [customers[0]] + self.quicksort(greater_than_pivot)
 
-    @count_time("sorting")
+    
     def sort_customers_by_account_number(self):
         self.customers = self.quicksort(self.customers)
 
 
     @count_time("Searching")
     def binary_search(self, element):
-        lista = [customer.account_number for customer in self.customers]
+        lista = [customer.account_number[-10:] for customer in self.customers]
         element = element
         length = len(lista)-1
-        i = 0
-        while i <= length:
-            medium = (i + length)//2
+        low = 0
+        while low <= length:
+            medium = (low + length)//2
             if element < lista[medium]:
                 length = medium -1 
             elif element > lista[medium]:
-                i = medium + 1
+                low = medium + 1
             elif element == lista[medium]:
                 print(f"{element} matchar {lista[medium]}")
                 break
