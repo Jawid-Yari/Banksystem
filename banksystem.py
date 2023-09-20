@@ -2,6 +2,7 @@ import datetime
 import random
 from time import perf_counter
 import string
+from barnum import gen_data
 class Customer:
     def __init__(self, name, birthdate, account_number, created,saldo, last_updated: str = None):
         self.name = name 
@@ -62,11 +63,8 @@ class Customer_database:
 
 
     def generate_names(slef) -> str:
-        len_name = random.randint(3,8)
-        first_letter = random.choice(string.ascii_uppercase)
-        rest_of_string = ''.join(random.choice(string.ascii_lowercase) for _ in range(len_name))
-        name = first_letter + rest_of_string
-        return name 
+        name = " ".join(gen_data.create_name())
+        return name
     
 
     def generate_account_num(self):
@@ -77,19 +75,8 @@ class Customer_database:
             if account_number not in self.generated_account_number:
                 self.generated_account_number.add(account_number)
                 return account_number
-            
-        
-
-
-    def generate_date(self):
-        created = datetime.date(random.randint(1940, 2000), 
-                                    random.randint(1, 12), 
-                                    random.randint(1, 24))
-        return created
-
 
     
-
 
     def last_updated_time(self) -> datetime:
         return datetime.datetime.now()
@@ -99,9 +86,9 @@ class Customer_database:
         
         for _ in range(1, number_of_customer + 1):
             name = self.generate_names()
-            birthdate = self.generate_date()
+            birthdate = gen_data.create_birthday()
             account_number = self.generate_account_num()
-            created = self.generate_date()
+            created = datetime.datetime.now()
             saldo = random.uniform(0, 10000)
             last_updated = self.last_updated_time()
 
