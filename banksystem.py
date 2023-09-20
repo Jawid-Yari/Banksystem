@@ -51,11 +51,12 @@ class Customer_database:
             return customers
         else:
             pivot = customers[0].account_number[-10:]
-            less_than_pivot = [customer for customer in customers[1:] if customer.account_number[-10:] < pivot]
-            equal_to_pivot = [customer for customer in customers[1:] if customer.account_number[-10:] == pivot]
-            greater_than_pivot = [customer for customer in customers[1:] if customer.account_number[-10:] > pivot]
-            return self.quicksort(less_than_pivot) + equal_to_pivot + [customers[0]] + self.quicksort(greater_than_pivot)
-    
+            smaller = [customer for customer in customers if customer.account_number[-10:] < pivot]
+            equal = [customer for customer in customers if customer.account_number[-10:] == pivot]
+            larger = [customer for customer in customers if customer.account_number[-10:] > pivot]
+            return self.quicksort(smaller) + equal + self.quicksort(larger)
+
+
 
     @count_time("sorting")
     def sort_customers_by_account_number(self):
