@@ -1,6 +1,6 @@
 import datetime 
 import random
-from time import time
+from time import perf_counter
 import string
 class Customer:
     def __init__(self, name, birthdate, account_number, created,saldo, last_updated: str = None):
@@ -25,10 +25,10 @@ class Customer:
 def count_time(message):
     def decorator(func:callable):
         def inner(*args, **kwargs):
-            start = time()
+            start = perf_counter()
             result =func(*args, **kwargs)
-            end = time()
-            print( f"{message} took {end - start} minutes")
+            end = perf_counter()
+            print( f"{message} took {end - start} seconds")
             return result
         return inner
     return decorator
@@ -86,6 +86,8 @@ class Customer_database:
                                     random.randint(1, 12), 
                                     random.randint(1, 24))
         return created
+
+
     
 
 
