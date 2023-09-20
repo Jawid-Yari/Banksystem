@@ -113,7 +113,7 @@ class Customer_database:
 
 @count_time("Creating customer")
 def generate_customers():
-    customer_db.generate_customer(10)
+    customer_db.generate_customer(10_000_000)
 
 
 
