@@ -1,25 +1,28 @@
+from dataclasses import dataclass
 import datetime 
 import random
 from time import time
 from faker import Faker
 
+@dataclass
 class Customer:
-    def __init__(self, name, birthdate, account_number, created,saldo, last_updated: str = None):
-        self.name = name 
-        self.birthdate = birthdate
-        self.account_number = account_number
-        self.created = created
-        self.saldo = saldo
-        self.last_updated = last_updated
+    name: str
+    birthdate:str 
+    account_number: str 
+    created: datetime
+    saldo: float
+    last_updated:datetime
 
-    def __repr__(self) -> str:
-        return (f"Account Owner: {self.name}\n"
+    
+    def __str__(self) -> str:
+        formatted_output = (f"Account Owner: {self.name}\n"
                 f"Birthdate: {self.birthdate}\n"
                 f"Account number: {self.account_number}\n"
                 f"Created date: {self.created}\n"
                 f"Saldo: {self.saldo}\n"
                 f"Last updated: {self.last_updated}\n"
                 )
+        return formatted_output
 
 
 
@@ -36,11 +39,9 @@ def count_time(message):
     
 
 
-
-class Customer_database: 
-    def __init__(self):
-        self.customers = [] 
-
+@dataclass
+class Customer_database:  
+    customers = []
 
     def __repr__(self) -> str:
         return self.customers
@@ -106,7 +107,7 @@ if __name__ == "__main__":
 
     @count_time("Creating customer")
     def generate_customers():
-        customer_db.generate_customer(10**7)
+        customer_db.generate_customer(10)
 
 
     @count_time("Searching")    
