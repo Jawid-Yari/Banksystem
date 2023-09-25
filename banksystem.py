@@ -138,12 +138,12 @@ def generate_customers():
 
     
 def search_account(account_to_check: str):
-    for itam in account_to_check:
-        found_account = customer_db.binary_search(element=itam)
+    for item in account_to_check:
+        found_account = customer_db.binary_search(element=item)
         if found_account:
             print(found_account)
         else:
-            print(f"Account number: {itam} not found")
+            print(f"Account number: {item} not found")
 
 
 
@@ -161,7 +161,4 @@ if __name__ == "__main__":
     accounts_to_check = ["1111-0000001000", "1111-0009999999", "1111-9999999999"]
     search_account(account_to_check= accounts_to_check)
 
-    
-    for customer in customer_db.customers:
-        print(customer)
     
