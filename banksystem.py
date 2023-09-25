@@ -1,26 +1,33 @@
+from dataclasses import dataclass
 import datetime 
 import random
 from time import perf_counter
-import string
 from barnum import gen_data
-class Customer:
-    def __init__(self, name, birthdate, account_number, created,saldo, last_updated: str = None):
-        self.name = name 
-        self.birthdate = birthdate
-        self.account_number = account_number
-        self.created = created
-        self.saldo = saldo
-        self.last_updated = last_updated
 
-    def __repr__(self) -> str:
-        return (f"Account owner: {self.name}\n"
+
+
+@dataclass
+class Customer:
+    name: str
+    birthdate:str 
+    account_number: str 
+    created: datetime
+    saldo: float
+    last_updated:datetime
+
+
+    """
+    Jag vill formatera klassens output attribut
+    """
+    def __str__(self) -> str:
+        formatted_output = (f"Account Owner: {self.name}\n"
                 f"Birthdate: {self.birthdate}\n"
                 f"Account number: {self.account_number}\n"
                 f"Created date: {self.created}\n"
                 f"Saldo: {self.saldo}\n"
-                f"Last Updated: {self.last_updated}\n"
+                f"Last updated: {self.last_updated}\n"
                 )
-
+        return formatted_output
 
 
 def count_time(message):
@@ -29,45 +36,60 @@ def count_time(message):
             start = perf_counter()
             result =func(*args, **kwargs)
             end = perf_counter()
-            print( f"{message} took {end - start} seconds")
+            print( f"It took {end - start} seconds {message}")
             return result
         return inner
     return decorator
     
 
 
-
+@dataclass
 class Customer_database: 
-    def __init__(self):
-        self.customers = []
-        self.generated_account_number = set()
-
-    def __repr__(self) -> str:
-        return self.customers
+    customers = []
+    generated_account_number = set()
 
     
-    def quicksort(self, customers):
-        if len(customers) <= 1:
-            return customers
-        else:
-            pivot = customers[0].account_number[-10:]
-            smaller = [customer for customer in customers if customer.account_number[-10:] < pivot]
-            equal = [customer for customer in customers if customer.account_number[-10:] == pivot]
-            larger = [customer for customer in customers if customer.account_number[-10:] > pivot]
-            return self.quicksort(smaller) + equal + self.quicksort(larger)
+    def partition(self, list, start, end):
+        pivot = list[start].account_number[-10:]
+        low = start +1
+        high = end
+        while True:
 
+            while low <= high and list[high].account_number[-10:] >= pivot:
+                high = high -1
+            while low <= high and list[low].account_number[-10:] <= pivot:
+                low = low + 1 
+            if low <= high:
+                list[low], list[high] = list[high], list[low]
+            else:
+                break
+        list[start], list[high] = list[high], list[start]
 
+        return high
+    
 
-    @count_time("sorting")
+    def quick_sort(self, array, start, end):
+        if start >= end:
+            return
+        p = self.partition(array, start, end)
+        self.quick_sort(array, start, p-1)
+        self.quick_sort(array, p+1, end)
+    
+
+    @count_time("to sort customers")
     def sort_customers_by_account_number(self):
-        self.customers = self.quicksort(self.customers)
+        customers_list = self.customers
+        self.quick_sort(customers_list, 0, len(customers_list) - 1)
+        self.customers = customers_list
 
 
     def generate_names(slef) -> str:
         name = " ".join(gen_data.create_name())
         return name
     
-
+    """
+    while generating account numbers, verifying that there  is no dublicate account number genrated
+    """
     def generate_account_num(self):
         while True:
             clearing_num = random.randint(1111,9999)
@@ -111,13 +133,13 @@ class Customer_database:
             return None
 
 
-@count_time("Creating customer")
+@count_time("to create customers")
 def generate_customers():
     customer_db.generate_customer(10_000_000)
 
 
 
-@count_time("Searching")    
+@count_time("to search")    
 def search_account(account_to_check: str):
     found_account = customer_db.get_account(account_to_search=account_to_check)
     if found_account:
@@ -137,6 +159,7 @@ if __name__ == "__main__":
     generate_customers()
 
     customer_db.sort_customers_by_account_number()
+   
 
-    for ac in customer_db.customers:
-        print(ac)
+    # for ac in customer_db.customers:
+    #     print(ac)
