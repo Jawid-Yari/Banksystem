@@ -1,54 +1,57 @@
+from dataclasses import dataclass
 import datetime 
 import random
-from time import time
-from faker import Faker
+from time import perf_counter
+from barnum import gen_data
 
+@dataclass
 class Customer:
-    def __init__(self, name, birthdate, account_number, created,saldo, last_updated: str = None):
-        self.name = name 
-        self.birthdate = birthdate
-        self.account_number = account_number
-        self.created = created
-        self.saldo = saldo
-        self.last_updated = last_updated
+    name: str
+    birthdate:str 
+    account_number: str 
+    created: datetime
+    saldo: float
+    last_updated:datetime
 
-    def __repr__(self) -> str:
-        return (f"{self.name}\n"
-                f"{self.birthdate}\n"
-                f"{self.account_number}\n"
-                f"{self.created}\n"
-                f"{self.saldo}\n"
-                f"{self.last_updated}\n"
+    """
+    Jag vill formatera klassens output attribut
+    """
+    def __str__(self) -> str:
+        formatted_output = (f"Account Owner: {self.name}\n"
+                f"Birthdate: {self.birthdate}\n"
+                f"Account number: {self.account_number}\n"
+                f"Created date: {self.created}\n"
+                f"Saldo: {self.saldo}\n"
+                f"Last updated: {self.last_updated}\n"
                 )
+        return formatted_output
 
 
 
 def count_time(message):
     def decorator(func:callable):
         def inner(*args, **kwargs):
-            start = time()
+            start = perf_counter()
             result =func(*args, **kwargs)
-            end = time()
-            print( f"{message} took {end - start} minutes")
+            end = perf_counter()
+            print( f"It took {end - start} seconds {message}")
             return result
         return inner
     return decorator
     
 
 
-
+@dataclass
 class Customer_database: 
-    def __init__(self):
-        self.customers = { }
+    customers = { }
 
 
     def __repr__(self) -> str:
         return self.customers
     
 
-    def generate_names(slef) -> str:
-        fake = Faker()
-        name = fake.first_name()
+    def generate_names(self) -> str:
+        name = ' '.join(gen_data.create_name())
         return name 
     
 
@@ -68,13 +71,12 @@ class Customer_database:
     def last_updated_time(self) -> datetime:
         return datetime.datetime.now()
         
-
+    @count_time("to create customers")
     def generate_customer(self, number_of_customer):
-        fake = Faker()
         for c in range(1, number_of_customer + 1):
             self.customers[self.generate_account_num(c)] = Customer(
                                                         name=self.generate_names(),
-                                                        birthdate=fake.date(),
+                                                        birthdate=gen_data.create_date(),
                                                         account_number=self.generate_account_num(c),
                                                         created=self.generate_created_date(),
                                                         saldo=random.uniform(0, 10000),
@@ -82,7 +84,7 @@ class Customer_database:
                                                         )
             
 
-
+    @count_time("to search") 
     def get_account(self, account_to_search: str) -> Customer or None:
         return self.customers.get(account_to_search, None)
 
@@ -93,12 +95,12 @@ if __name__ == "__main__":
     customer_db = Customer_database()
 
 
-    @count_time("Creating customer")
+    
     def generate_customers():
-        customer_db.generate_customer(10)
+        customer_db.generate_customer(10_000)
 
 
-    @count_time("Searching")    
+       
     def search_account(account_to_check: str):
         found_account = customer_db.get_account(account_to_search=account_to_check)
         if found_account:
@@ -113,5 +115,5 @@ if __name__ == "__main__":
     for i in (accounts_to_check):
         search_account(i)
 
-    for account_number in customer_db.customers.keys():
-        print(account_number)
+    
+
