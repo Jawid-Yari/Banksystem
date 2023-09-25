@@ -1,8 +1,7 @@
 import datetime 
 import random
 from time import perf_counter
-from faker import Faker
-
+from barnum import gen_data
 class Customer:
     def __init__(self, name, birthdate, account_number, created,saldo, last_updated: str = None):
         self.name = name 
@@ -50,10 +49,10 @@ class Customer_database:
             return customers
         else:
             pivot = customers[0].account_number[-10:]
-            less_than_pivot = [customer for customer in customers[1:] if customer.account_number[-10:] < pivot]
-            equal_to_pivot = [customer for customer in customers[1:] if customer.account_number[-10:] == pivot]
-            greater_than_pivot = [customer for customer in customers[1:] if customer.account_number[-10:] > pivot]
-            return self.quicksort(less_than_pivot) + equal_to_pivot + [customers[0]] + self.quicksort(greater_than_pivot)
+            smaller = [customer for customer in customers if customer.account_number[-10:] < pivot]
+            equal = [customer for customer in customers if customer.account_number[-10:] == pivot]
+            larger = [customer for customer in customers if customer.account_number[-10:] > pivot]
+            return self.quicksort(smaller) + equal + self.quicksort(larger)
 
     
     def sort_customers_by_account_number(self):
@@ -75,27 +74,12 @@ class Customer_database:
             elif number_to_search == lista_of_account_numbers[medium]:
                 print(f"Account number '{element}' matchar {lista_of_account_numbers[medium]}")
                 break
-            
-
-
-    def generate_names(slef) -> str:
-        fake = Faker()
-        name = fake.first_name()
-        return name 
     
 
     def generate_account_num(self, c):
         account_number = f"1111-{c:00000000010}"
         return account_number
         
-
-
-    def generate_created_date(self):
-        created = datetime.date(random.randint(1940, 2000), 
-                                    random.randint(1, 12), 
-                                    random.randint(1, 24))
-        return created
-    
 
 
     def last_updated_time(self) -> datetime:
@@ -105,11 +89,10 @@ class Customer_database:
     def generate_customer(self,number_of_customer):
         
         for _ in range(1, number_of_customer + 1):
-            fake = Faker()
-            name = self.generate_names()
-            birthdate = fake.date()
+            name = ''.join(gen_data.create_name())
+            birthdate = gen_data.create_birthday()
             account_number = self.generate_account_num(_)
-            created = self.generate_created_date()
+            created = gen_data.create_date()
             saldo = random.uniform(0, 10000)
             last_updated = self.last_updated_time()
 
@@ -158,11 +141,11 @@ if __name__ == "__main__":
 
     customer_db.sort_customers_by_account_number()
 
-    accounts_to_check = ["1111-0000001000", "1111-0009999999", "1111-9999999999", "1111-0000000003"]
+    accounts_to_check = ["1111-0000001000", "1111-0009999999", "1111-9999999999"]
     for item in (accounts_to_check):
         customer_db.binary_search(item)
 
     
-    for ac in customer_db.customers:
-        print(ac)
+    for customer in customer_db.customers:
+        print(customer)
     
